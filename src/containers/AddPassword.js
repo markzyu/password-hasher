@@ -77,7 +77,7 @@ const AddPassword = props => {
   return (
     <Row>
       <Col xs={3} lg={4}><Form.Control ref={x => name=x}/></Col>
-      <Col xs={3} lg={4}><Form.Control type="password" ref={x => password=x}/></Col>
+      <Col xs={3} lg={4}><Form.Control type="password" autoComplete="off" ref={x => password=x}/></Col>
       <Col xs={3} lg={2} className="action-col">
         <Button variant="primary" onClick={onAdd}>Add</Button>
       </Col>

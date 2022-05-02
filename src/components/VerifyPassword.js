@@ -32,6 +32,7 @@ const VerifyPassword = props => {
           data-testid="verify-password:input"
           value={pass}
           type="password" 
+          autoComplete="off"
           isInvalid={hasChecked && !passOk} 
           isValid={hasChecked && passOk}
           onChange={editAction} 
