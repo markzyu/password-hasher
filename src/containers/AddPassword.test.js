@@ -16,6 +16,30 @@ test('Sends addPassword action when "Add" button is clicked', () => {
   expect(action.name).toBe('');
 });
 
+test('Clears input boxes when "Add" button is clicked', async () => {
+  const mockDispatch = jest.fn();
+  const { getByText, getByLabelText } = render(<AddPasswordTestable dispatch={mockDispatch}/>);
+
+  const name = getByLabelText('Name');
+  const password = getByLabelText('Password');
+  fireEvent.change(name, {target: {value: 'test1'}});
+  fireEvent.change(password, {target: {value: 'test2'}});
+  expect(name.value).toBe('test1');
+  expect(password.value).toBe('test2');
+
+  const btn = getByText('Add');
+  expect(btn).toBeInTheDocument();
+  fireEvent.click(btn);
+
+  expect(mockDispatch).toHaveBeenCalledTimes(1);
+  let action = mockDispatch.mock.calls[0][0];
+  expect(action.type).toBe('ADD_PASSWORD');
+  expect(action.name).toBe('test1');
+
+  expect(name.value).toBe('');
+  expect(password.value).toBe('');
+});
+
 test('Updates window.localStorage when "Add" button is clicked', () => {
   window.localStorage.clear();
   const mockDispatch = jest.fn();

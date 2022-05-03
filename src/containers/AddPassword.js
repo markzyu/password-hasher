@@ -34,7 +34,10 @@ const AddPassword = props => {
     let hashMethod = "sha512;last2"
     let salt = uuid4().toString();
     let hash = toHash(hashMethod, salt, password.value);
-    helpAdd(name.value, salt, hash, hashMethod);
+    if (helpAdd(name.value, salt, hash, hashMethod)) {
+      name.value = '';
+      password.value = '';
+    }
   }
   const onExport = async () => {
     setPreppingExport(true);
@@ -76,8 +79,8 @@ const AddPassword = props => {
   const downloadButton = exportUrl && <a className="btn btn-primary" onClick={onDownload} download="exported-passwords.json" href={exportUrl}>Download</a>;
   return (
     <Row>
-      <Col xs={3} lg={4}><Form.Control ref={x => name=x}/></Col>
-      <Col xs={3} lg={4}><Form.Control type="password" autoComplete="off" ref={x => password=x}/></Col>
+      <Col xs={3} lg={4}><Form.Control aria-label='Name' ref={x => name=x}/></Col>
+      <Col xs={3} lg={4}><Form.Control aria-label='Password' type="password" autoComplete="off" ref={x => password=x}/></Col>
       <Col xs={3} lg={2} className="action-col">
         <Button variant="primary" onClick={onAdd}>Add</Button>
       </Col>
