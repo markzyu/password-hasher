@@ -33,6 +33,22 @@ export const clearPassword = name => {
   }
 }
 
+export const getSettings = name => {
+  let storage = window && window.localStorage;
+  if (!storage) return null;
+
+  const key = `password-settingsv1-${name}`;
+  return JSON.parse(window.localStorage.getItem(key));
+}
+
+export const setSettings = (name, val) => {
+  let storage = window && window.localStorage;
+  if (!storage) return;
+
+  const key = `password-settingsv1-${name}`;
+  return window.localStorage.setItem(key, JSON.stringify(val));
+}
+
 const KEY_USER_AGREEMENT_READ = "password-metav1-user-agreement-read";
 
 export const setAgreementRead = boolVal => {

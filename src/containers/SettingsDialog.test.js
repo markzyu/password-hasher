@@ -1,7 +1,23 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
-import { SettingsDialogTestable } from './SettingsDialog';
+import SettingsDialog, { SettingsDialogTestable } from './SettingsDialog';
+import { getSettings } from '../store';
+import { SETTINGS_STORE_HINTS } from '../lib/utils';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import { testableStore } from '../reducers';
+import { setShowSettings } from '../actions';
+
+const doRender = (component) => {
+  const store = createStore(testableStore);
+  const result = render(
+    <Provider store={store}>
+      {component}
+    </Provider>
+  );
+  return [store, result];
+}
 
 test('Clicking "Export" button makes it grey out, and turn into "Download" button', async () => {
   const mockcreateObjURL = jest.fn(blob => {
@@ -12,7 +28,7 @@ test('Clicking "Export" button makes it grey out, and turn into "Download" butto
   const mockDispatch = jest.fn();
   global.URL.createObjectURL = mockcreateObjURL;
 
-  const { getByText } = render(<SettingsDialogTestable dispatch={mockDispatch} allPasswords={[{name: 'test123'}]} showSettings={true} />);
+  const [ , { getByText} ]= doRender(<SettingsDialogTestable dispatch={mockDispatch} allPasswords={[{name: 'test123'}]} showSettings={true} />);
 
   const exportBtn = getByText("Export");
   expect(exportBtn).toBeInTheDocument();
@@ -45,7 +61,7 @@ test('Clicking "Import" button actually imports passwords', async () => {
   window.showOpenFilePicker = mockOpenFile;
   window.localStorage.clear();
 
-  const { getByText } = render(<SettingsDialogTestable dispatch={mockDispatch} allPasswords={[]} showSettings={true} />);
+  const [ , { getByText} ]= doRender(<SettingsDialogTestable dispatch={mockDispatch} allPasswords={[]} showSettings={true} />);
   const importBtn = getByText("Import");
 
   expect(importBtn).toBeInTheDocument();
@@ -54,7 +70,7 @@ test('Clicking "Import" button actually imports passwords', async () => {
 
   await act(() => new Promise(done => setTimeout(done, 500)));
 
-  let action = mockDispatch.mock.calls[0][0];
+  let action = mockDispatch.mock.calls[1][0];
   expect(action.type).toBe('ADD_PASSWORD');
   expect(action.name).toBe('a');
   expect(action.salt).toBe('ff3ed16e-cc3f-4d49-ac52-c1540a7d7a01');
@@ -64,3 +80,24 @@ test('Clicking "Import" button actually imports passwords', async () => {
   expect(window.localStorage.length).toBe(1);
   expect(window.localStorage.key(0)).toBe('passwordv1-a');
 });
+
+test('Toggling the widget called: Store extra hints about passwords (less safe)', async () => {
+  const [ store, { getByLabelText} ]= doRender(<SettingsDialog />);
+
+  expect(getSettings(SETTINGS_STORE_HINTS)).toBeNull();
+  store.dispatch(setShowSettings(true));
+
+  const toggle = getByLabelText('Store extra hints about passwords (less safe)');
+  expect(toggle).toBeVisible();
+  expect(toggle).not.toBeChecked();
+
+  fireEvent.click(toggle, {target: {checked: true}});
+  expect(toggle).toBeVisible();
+  expect(toggle).toBeChecked();
+  expect(getSettings(SETTINGS_STORE_HINTS)).toBe(true);
+
+  fireEvent.click(toggle, {target: {checked: false}});
+  expect(toggle).toBeVisible();
+  expect(toggle).not.toBeChecked();
+  expect(getSettings(SETTINGS_STORE_HINTS)).toBe(false);
+})

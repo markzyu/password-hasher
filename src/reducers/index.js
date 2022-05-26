@@ -12,3 +12,9 @@ export default combineReducers({
   errors,
   agreement,
 })
+
+export const testableStore = combineReducers({
+  settings,
+  passwordDetail,
+  passwordList,
+})
