@@ -7,15 +7,12 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import {v4 as uuid4} from 'uuid';
 
-import {tryAddPassword} from '../actions';
+import {setShowSettings, tryAddPassword} from '../actions';
 import {toHash} from '../lib/hasher.js';
-import { sleep } from '../lib/utils';
 
 const AddPassword = props => {
   let name;
   let password;
-  const [preppingExport, setPreppingExport] = useState(false);
-  const [exportUrl, setExportUrl] = useState(null);
 
   const onAdd = () => {
     let hashMethod = "sha512;last2"
@@ -26,44 +23,11 @@ const AddPassword = props => {
       password.value = '';
     }
   }
-  const onExport = async () => {
-    setPreppingExport(true);
-    await sleep(1000);
-    const str = JSON.stringify(props.allPasswords);
-    const blob = new Blob([str], {type: 'application/json'});
-    const url = URL.createObjectURL(blob);
-    setExportUrl(url);
-  }
-  const onImport = async () => {
-    const [fileHandle] = await window.showOpenFilePicker();
-    const file = await fileHandle.getFile();
-    const text = await file.text();
-    const items = JSON.parse(text);
-    const existingNames = new Set();
-    for (const item of props.allPasswords) {
-      existingNames.add(item.name);
-    }
-    for (const item of items) {
-      const name = item.name;
-      const salt = item.salt;
-      const hash = item.hash;
-      const hashMethod = item.hashMethod;
 
-      if (typeof name != 'string') continue;
-
-      console.log(`Adding password named: ${name}`)
-      if (!tryAddPassword(props.dispatch, name, salt, hash, hashMethod)) break;
-    }
-  }
-  const onDownload = () => {
-    setExportUrl(null);
-    setPreppingExport(false);
-    return true;
+  const onSettings = () => {
+    props.dispatch(setShowSettings(true));
   }
 
-  const importButton = <Button variant="primary" onClick={onImport}>Import</Button>;
-  const exportButton = exportUrl ? null : <Button variant="primary" onClick={onExport} disabled={preppingExport}>Export</Button>;
-  const downloadButton = exportUrl && <a className="btn btn-primary" onClick={onDownload} download="exported-passwords.json" href={exportUrl}>Download</a>;
   return (
     <Row>
       <Col xs={3} lg={4}><Form.Control aria-label='Name' ref={x => name=x}/></Col>
@@ -71,10 +35,8 @@ const AddPassword = props => {
       <Col xs={3} lg={2} className="action-col">
         <Button variant="primary" onClick={onAdd}>Add</Button>
       </Col>
-      <Col xs={3} lg={2} className="action-col buttonMargin">
-        {importButton}
-        {exportButton}
-        {downloadButton}
+      <Col xs={3} lg={2} className="action-col">
+        <Button variant="primary" onClick={onSettings}>Settings</Button>
       </Col>
     </Row>
   );

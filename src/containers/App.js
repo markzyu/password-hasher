@@ -14,6 +14,7 @@ import PasswdDetailDialog from './PasswdDetailDialog.js';
 import PasswordList from '../components/PasswordList.js';
 import './App.css';
 import UserAgreementDialog from './UserAgreementDialog.js';
+import SettingsDialog from './SettingsDialog.js';
 
 const App = props => {
   var maybePasswordList = (<pre>Loading...</pre>);
@@ -39,6 +40,7 @@ const App = props => {
       <ErrorDialog />
       <PasswdDetailDialog />
       <UserAgreementDialog />
+      <SettingsDialog />
     </Container>
   );
 }
