@@ -1,6 +1,14 @@
 export const updatePassword = item => {
   if (window && window.localStorage) {
-    window.localStorage.setItem(`passwordv1-${item.name}`, JSON.stringify(item));
+
+    const key = `passwordv1-${item.name}`;
+    if (window.localStorage.getItem(key) !== null) {
+      throw new Error(
+        `There is already a password named "${item.name}". Please use a different name.`
+      );
+    }
+
+    window.localStorage.setItem(key, JSON.stringify(item));
   }
 };
 

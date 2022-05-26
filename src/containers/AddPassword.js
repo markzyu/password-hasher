@@ -7,9 +7,8 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import {v4 as uuid4} from 'uuid';
 
-import {addPassword, showError} from '../actions';
+import {tryAddPassword} from '../actions';
 import {toHash} from '../lib/hasher.js';
-import {updatePassword} from '../store';
 import { sleep } from '../lib/utils';
 
 const AddPassword = props => {
@@ -18,23 +17,11 @@ const AddPassword = props => {
   const [preppingExport, setPreppingExport] = useState(false);
   const [exportUrl, setExportUrl] = useState(null);
 
-  const helpAdd = (name, salt, hash, hashMethod) => {
-    let allPasswords = props.allPasswords || [];
-    if (allPasswords.some(x => x.name === name)) {
-      props.dispatch(showError(
-        `There is already a password named "${name}". Please use a different name.`
-      ));
-      return false;
-    }
-    updatePassword({name: name, salt: salt, hash: hash, hashMethod: hashMethod})
-    props.dispatch(addPassword(name, salt, hash, hashMethod));
-    return true;
-  }
   const onAdd = () => {
     let hashMethod = "sha512;last2"
     let salt = uuid4().toString();
     let hash = toHash(hashMethod, salt, password.value);
-    if (helpAdd(name.value, salt, hash, hashMethod)) {
+    if (tryAddPassword(props.dispatch, name.value, salt, hash, hashMethod)) {
       name.value = '';
       password.value = '';
     }
@@ -65,7 +52,7 @@ const AddPassword = props => {
       if (typeof name != 'string') continue;
 
       console.log(`Adding password named: ${name}`)
-      if (!helpAdd(name, salt, hash, hashMethod)) break;
+      if (!tryAddPassword(props.dispatch, name, salt, hash, hashMethod)) break;
     }
   }
   const onDownload = () => {
