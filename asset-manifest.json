@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/password-hasher/static/css/main.8b0aa1cc.css",
-    "main.js": "/password-hasher/static/js/main.ed03850b.js",
+    "main.js": "/password-hasher/static/js/main.d711776c.js",
     "index.html": "/password-hasher/index.html",
     "main.8b0aa1cc.css.map": "/password-hasher/static/css/main.8b0aa1cc.css.map",
-    "main.ed03850b.js.map": "/password-hasher/static/js/main.ed03850b.js.map"
+    "main.d711776c.js.map": "/password-hasher/static/js/main.d711776c.js.map"
   },
   "entrypoints": [
     "static/css/main.8b0aa1cc.css",
-    "static/js/main.ed03850b.js"
+    "static/js/main.d711776c.js"
   ]
 }
