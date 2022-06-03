@@ -16,5 +16,5 @@ export const TPasswordWithHandler = PropTypes.shape({
     ...passwordShape,
 });
 
-export const TPasswordList = PropTypes.arrayOf(TPassword.isRequired).isRequired;
-export const TPasswordListWithHandler = PropTypes.arrayOf(TPasswordWithHandler.isRequired).isRequired;
+export const TPasswordList = PropTypes.arrayOf(TPassword.isRequired);
+export const TPasswordListWithHandler = PropTypes.arrayOf(TPasswordWithHandler.isRequired);

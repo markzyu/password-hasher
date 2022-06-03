@@ -83,7 +83,6 @@ test('Saves hints about password parts when asked to', () => {
 
   expect(mockDispatch).toHaveBeenCalledTimes(1);
   let action = mockDispatch.mock.calls[0][0];
-  console.log(action);
   expect(action.type).toBe('ADD_PASSWORD');
   expect(action.name).toBe('');
   expect(action.partsHash).toHaveLength(3);

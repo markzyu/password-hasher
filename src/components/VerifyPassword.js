@@ -37,10 +37,10 @@ const VerifyPassword = props => {
     const parts = toPartsHash(item.partsHashMethod, item.salt, pass);
     const size = Math.floor(12 / parts.length);
     const bars = parts.map((hashVal, i) => {
-      const partOk = hashVal == item.partsHash[i];
+      const partOk = hashVal === item.partsHash[i];
       const describePartOk = partOk ? "correct" : "incorrect"
       const label = `Part ${i + 1} of the password is ${describePartOk}`
-      return <Col aria-label={label} xs={size} lg={size} style={partOk ? greenLine : redLine}></Col>
+      return <Col key={i} aria-label={label} xs={size} lg={size} style={partOk ? greenLine : redLine}></Col>
     })
     hints = (
       <Row style={{marginLeft: "2px", marginRight: "2px", marginTop: "5px"}}>
