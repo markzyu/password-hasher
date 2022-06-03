@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 
 import Container from 'react-bootstrap/Container';
@@ -15,6 +14,7 @@ import PasswordList from '../components/PasswordList.js';
 import './App.css';
 import UserAgreementDialog from './UserAgreementDialog.js';
 import SettingsDialog from './SettingsDialog.js';
+import { TPasswordList } from '../lib/types.js';
 
 const App = props => {
   var maybePasswordList = (<pre>Loading...</pre>);
@@ -46,12 +46,7 @@ const App = props => {
 }
 
 App.propTypes = {
-  content: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    salt: PropTypes.string.isRequired,
-    hash: PropTypes.string.isRequired,
-    hashMethod: PropTypes.string.isRequired,
-  }).isRequired).isRequired,
+  content: TPasswordList.isRequired,
 }
 
 const mapStateToProps = (state, props) => ({

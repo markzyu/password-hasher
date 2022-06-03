@@ -8,6 +8,7 @@ import Row from 'react-bootstrap/Row';
 import './PasswordList.css';
 import VerifyPassword from './VerifyPassword.js';
 import AddPassword from '../containers/AddPassword.js';
+import { TPasswordListWithHandler } from '../lib/types';
 
 export const getColorStyle = hashStr => {
   const hashVal = parseInt(hashStr, 16);
@@ -37,7 +38,7 @@ const PasswordList = props => {
   const verifyPasswords = props.content.map(item => {
     return (
       <ListGroup.Item key={item.name} style={getColorStyle(item.hash)}>
-        <VerifyPassword name={item.name} salt={item.salt} hash={item.hash} hashMethod={item.hashMethod} onMore={item.onMore}/>
+        <VerifyPassword item={item} onMore={item.onMore}/>
       </ListGroup.Item>
     )
   });
@@ -57,14 +58,7 @@ const PasswordList = props => {
 }
 
 PasswordList.propTypes = {
-  content: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    onDelete: PropTypes.func,
-    onMore: PropTypes.func.isRequired,
-    hash: PropTypes.string.isRequired,
-    hashMethod: PropTypes.string.isRequired,
-    salt: PropTypes.string.isRequired,
-  })).isRequired,
+  content: TPasswordListWithHandler.isRequired,
   onAddPassword: PropTypes.func,
 };
 
