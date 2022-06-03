@@ -1,12 +1,14 @@
 import { getSettings, setSettings, updatePassword } from "../store"
 import { SETTINGS_STORE_HINTS } from "../lib/utils"
 
-export const addPassword = (name, salt, hash, hashMethod) => ({
+export const addPassword = (name, salt, hash, hashMethod, partsHash, partsHashMethod) => ({
   type: 'ADD_PASSWORD',
   name,
   salt,
   hash,
   hashMethod,
+  partsHash,
+  partsHashMethod,
 })
 
 export const rmPassword = (name) => ({
@@ -14,14 +16,14 @@ export const rmPassword = (name) => ({
   name,
 })
 
-export const tryAddPassword = (dispatch, name, salt, hash, hashMethod) => {
+export const tryAddPassword = (dispatch, name, salt, hash, hashMethod, partsHash, partsHashMethod) => {
   try {
-    updatePassword({name: name, salt: salt, hash: hash, hashMethod: hashMethod})
+    updatePassword({name, salt, hash, hashMethod, partsHash, partsHashMethod})
   } catch (err) {
     dispatch(showError(err.message))
     return false;
   }
-  dispatch(addPassword(name, salt, hash, hashMethod));
+  dispatch(addPassword(name, salt, hash, hashMethod, partsHash, partsHashMethod));
   return true;
 }
 

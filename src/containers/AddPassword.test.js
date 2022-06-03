@@ -1,7 +1,10 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { AddPasswordTestable } from './AddPassword';
-import { act, mockComponent } from 'react-dom/test-utils';
+
+beforeEach(() => {
+  window.localStorage.clear();
+})
 
 test('Sends addPassword action when "Add" button is clicked', () => {
   const mockDispatch = jest.fn();
@@ -14,6 +17,8 @@ test('Sends addPassword action when "Add" button is clicked', () => {
   let action = mockDispatch.mock.calls[0][0];
   expect(action.type).toBe('ADD_PASSWORD');
   expect(action.name).toBe('');
+  expect(action.partsHash).toBeUndefined();
+  expect(action.partsHashMethod).toBeUndefined();
 });
 
 test('Clears input boxes when "Add" button is clicked', async () => {
@@ -41,7 +46,6 @@ test('Clears input boxes when "Add" button is clicked', async () => {
 });
 
 test('Updates window.localStorage when "Add" button is clicked', () => {
-  window.localStorage.clear();
   const mockDispatch = jest.fn();
   const { getByText } = render(<AddPasswordTestable dispatch={mockDispatch}/>);
   const btn = getByText("Add");
@@ -60,11 +64,28 @@ test('Sends showError action when password names have duplicates', () => {
   const btn = getByText("Add");
   expect(btn).toBeInTheDocument();
   fireEvent.click(btn);
+  fireEvent.click(btn);
 
-  expect(mockDispatch).toHaveBeenCalledTimes(1);
-  let action = mockDispatch.mock.calls[0][0];
+  expect(mockDispatch).toHaveBeenCalledTimes(2);
+  let action = mockDispatch.mock.calls[1][0];
   expect(action.type).toBe('SHOW_ERROR');
   expect(action.msg).toBe(
     'There is already a password named "". Please use a different name.'
   );
 });
+
+test('Saves hints about password parts when asked to', () => {
+  const mockDispatch = jest.fn();
+  const { getByText } = render(<AddPasswordTestable dispatch={mockDispatch} storeHints={true}/>);
+  const btn = getByText("Add");
+  expect(btn).toBeInTheDocument();
+  fireEvent.click(btn);
+
+  expect(mockDispatch).toHaveBeenCalledTimes(1);
+  let action = mockDispatch.mock.calls[0][0];
+  console.log(action);
+  expect(action.type).toBe('ADD_PASSWORD');
+  expect(action.name).toBe('');
+  expect(action.partsHash).toHaveLength(3);
+  expect(action.partsHashMethod).toBe("sha512;last1");
+})

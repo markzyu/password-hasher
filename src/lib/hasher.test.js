@@ -1,4 +1,4 @@
-import {genGuessesFromHash, toHash, _rawSha512} from './hasher.js';
+import {genGuessesFromHash, toHash, toPartsHash, _rawSha512} from './hasher.js';
 
 const salt = '2644047a-eca9-4858-8282-048480983051'; 
 
@@ -15,3 +15,21 @@ test('provide example guess words from hash', () => {
   expect(toHash('sha512;last4', salt, 'apples')).toEqual('fd7c');
   expect(genGuessesFromHash('sha512;last4', salt, 'fd7c')).toContain('apples');
 });
+
+test('test parts hash of length 6', () => {
+  const parts = [
+    toHash('sha512;last1', salt, 'ab'),
+    toHash('sha512;last1', salt, 'cd'),
+    toHash('sha512;last1', salt, 'ef'),
+  ];
+  expect(toPartsHash('sha512;last1', salt, 'abcdef', 3)).toEqual(parts);
+})
+
+test('test parts hash of length 7', () => {
+  const parts = [
+    toHash('sha512;last1', salt, 'ab'),
+    toHash('sha512;last1', salt, 'cd'),
+    toHash('sha512;last1', salt, 'efg'),
+  ];
+  expect(toPartsHash('sha512;last1', salt, 'abcdefg', 3)).toEqual(parts);
+})
